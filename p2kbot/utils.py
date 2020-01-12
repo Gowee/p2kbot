@@ -19,7 +19,7 @@ def get_sender_email(user_id):
     local_part = h.hexdigest()[11:21]
     return f"{local_part}@{EMAIL_DOMAIN}"
 
-REGEX_EMAIL_ADDRESS = re.compile("^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$")
+REGEX_EMAIL_ADDRESS = re.compile(r"^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$")
 def is_valid_email_address(s):
     return REGEX_EMAIL_ADDRESS.match(s) is not None
 

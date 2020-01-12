@@ -80,22 +80,26 @@ async def handle_file(message: types.Message):
             file = await bot.get_file(message.document.file_id)
             file_url = f"https://api.telegram.org/file/bot{BOT_TOKEN}/{file.file_path}"
             file_name = message.document.file_name
-            file_ext = os.path.splitext(file_name)[1]
+            file_stem, file_ext = os.path.splitext(file_name)
             file_path, reply = await asyncio.gather(download_file(file_url, simple_sha1(file.file_unique_id) + file_ext),
-                                                message.reply("📥 Downloading the document...",
-                                                              parse_mode=ParseMode.MARKDOWN,
-                                                              disable_web_page_preview=True,))
-            file_path, reply = await asyncio.gather(convert_ebook(file_path),
-                                                reply.edit_text("🔄 Converting the document...",
-                                                              parse_mode=ParseMode.MARKDOWN,
-                                                              disable_web_page_preview=True,))
-            reply, _ = await asyncio.gather(reply.edit_text("✉️ Push the document to Kindle...",
-                                               parse_mode=ParseMode.MARKDOWN,
-                                               disable_web_page_preview=True,),
-                                 kindle.push_file(sender_email, recipient_email, file_path, file_name))
-            await reply.edit_text("✅ Push done. It may take a few minutes to reach Kindle.",
-                                parse_mode=ParseMode.MARKDOWN,
-                                disable_web_page_preview=True,)
+                                                    message.reply("📥 Downloading the document...",
+                                                                  parse_mode=ParseMode.MARKDOWN,
+                                                                  disable_web_page_preview=True,))
+            if file_ext.lower() not in kindle.DOCUMENT_FORMATS:
+                file_path, reply = await asyncio.gather(convert_ebook(file_path),
+                                                        reply.edit_text("🔄 Converting the document...",
+                                                                        parse_mode=ParseMode.MARKDOWN,
+                                                                        disable_web_page_preview=True,))
+            reply, _ = await asyncio.gather(reply.edit_text("✉️ Pushing the document to Kindle...",
+                                                            parse_mode=ParseMode.MARKDOWN,
+                                                            disable_web_page_preview=True,),
+                                            kindle.push_file(sender_email,
+                                                             recipient_email,
+                                                             file_path,
+                                                             file_stem + os.path.splitext(file_path)[1]))
+            await reply.edit_text("✅ Push done.\nIt may take a few minutes to reach Kindle.",
+                                  parse_mode=ParseMode.MARKDOWN,
+                                  disable_web_page_preview=True,)
         except Exception as e:
             try:
                 await reply.delete()
@@ -134,7 +138,4 @@ async def handle_message(message: types.Message):
 
 
 def run():
-    logging.basicConfig(level=logging.INFO)
-    # logger.setLevel(logging.DEBUG)
-
     executor.start_polling(dispatcher)

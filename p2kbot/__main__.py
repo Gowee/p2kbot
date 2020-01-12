@@ -1,4 +1,6 @@
 import sys
+import os
+import logging
 
 def main(args=sys.argv):
     if len(args) > 1 and args[1] == "botsrv":
@@ -18,6 +20,9 @@ def main(args=sys.argv):
     {args[0]} initdb
         Create and initialize SQLite DB file.""")
         exit(-1)
+        
+    logging.basicConfig(level=os.environ.get("LOG_LEVEL", "INFO").upper())
+
     run()
 
 if __name__ == '__main__':

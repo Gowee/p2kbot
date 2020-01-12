@@ -12,10 +12,10 @@ from .utils import logit
 from .config import CONVSRV_LISTEN_ADDRESS
 
 
-logger = logging.getLogger("converter-service")
+logger = logging.getLogger(__name__)
 
 
-# @logit(logger)
+@logit(logger)
 async def handle_cwd(_request):
     return web.json_response({"success": True, "cwd": os.getcwd()})
 
@@ -38,6 +38,7 @@ async def handle_convert(request):
                           plumber_logger, plumber_logger)
         loop = asyncio.get_running_loop()
         await loop.run_in_executor(None, plumber.run)
+    logger.debug(f"converted: {input_file_path} → {output_file_path}")
     return web.json_response({"success": True, "fpath": output_file_path})
 
 app = web.Application()

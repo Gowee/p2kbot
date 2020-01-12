@@ -38,5 +38,5 @@ async def resolve_MX(hostname):
         raise DNSResolutionError(msg)
     results = [(int((data := answer['data'].split(" ", maxsplit=1))[0]), data[1])
                for answer in response['Answer'] if answer['type'] == QTYPE.MX]
-    results.sort(key=lambda e: -e[0])
+    results.sort(key=lambda e: e[0])
     return list(map(lambda e: e[1], results))
