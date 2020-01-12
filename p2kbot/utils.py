@@ -19,9 +19,14 @@ def get_sender_email(user_id):
     local_part = h.hexdigest()[11:21]
     return f"{local_part}@{EMAIL_DOMAIN}"
 
-REGEX_EMAIL_ADDRESS = re.compile(r"^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$")
+
+REGEX_EMAIL_ADDRESS = re.compile(
+    r"^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$")
+
+
 def is_valid_email_address(s):
     return REGEX_EMAIL_ADDRESS.match(s) is not None
+
 
 def simple_sha1(s):
     h = sha1()
@@ -30,7 +35,6 @@ def simple_sha1(s):
 
 
 def logit(logger: logging.Logger, level=logging.DEBUG, when_done=False):
-    # TODO: works?
     def decorator(func):
         @wraps(func)
         def wrapped(*args, **kwargs):
@@ -79,6 +83,7 @@ def init_db(drop=False):
             connection.execute("DROP TABLE IF EXISTS Users")
         connection.execute(
             "CREATE TABLE IF NOT EXISTS Users(id INTEGER PRIMARY KEY, email TEXT)")
+
 
 LF = "\n"
 CR = "\r"
