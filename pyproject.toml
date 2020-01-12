@@ -16,8 +16,8 @@ aiosmtplib = "^1.1.2"
 aiodnsresolver = "^0.0.149"
 
 [tool.poetry.dev-dependencies]
-autopep8 = "^1.4.4"
 pylint = "^2.4.4"
+black = "^19.10b0"
 
 [build-system]
 requires = ["poetry>=0.12"]

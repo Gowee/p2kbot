@@ -1,3 +1,4 @@
+# pylint: skip-file
 # Adapted from https://github.com/aio-libs/aiosmtpd/blob/97730f37f4a283b3da3fa3dbf30dd925695fea69/examples/server.py
 """Simple SMTP server that dumps messages received to files."""
 import asyncio

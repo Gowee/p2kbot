@@ -1,6 +1,14 @@
 import os
 
-__all__ = ("BOT_TOKEN", "TEMP_DIR", "DB_PATH", "EMAIL_DOMAIN", "CONVSRV_LISTEN_ADDRESS", "BROKER_CONNECT_ADDRESS", "ALLOWED_KINDLE_DOMAINS")
+__all__ = (
+    "BOT_TOKEN",
+    "TEMP_DIR",
+    "DB_PATH",
+    "EMAIL_DOMAIN",
+    "CONVSRV_LISTEN_ADDRESS",
+    "BROKER_CONNECT_ADDRESS",
+    "ALLOWED_KINDLE_DOMAINS",
+)
 
 BOT_TOKEN = None
 TEMP_DIR = "./tmp/"
@@ -10,8 +18,10 @@ CONVSRV_LISTEN_ADDRESS = "127.0.0.1:12000"
 BROKER_CONNECT_ADDRESS = Ellipsis
 ALLOWED_KINDLE_DOMAINS = ["@kindle.com", "@kindle.cn", "@free.kindle.com"]
 
+
 class ConfigMissing(Exception):
     pass
+
 
 for envvar in __all__:
     val = os.environ.get(envvar)

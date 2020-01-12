@@ -21,7 +21,8 @@ def get_sender_email(user_id):
 
 
 REGEX_EMAIL_ADDRESS = re.compile(
-    r"^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$")
+    r"^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$"
+)
 
 
 def is_valid_email_address(s):
@@ -41,21 +42,30 @@ def logit(logger: logging.Logger, level=logging.DEBUG, when_done=False):
             # TODO: improve flow?
             if when_done:
                 r = func(*args, **kwargs)
-            logger.log(level,
-                       func.__name__ + ": " + ", ".join(
-                           chain(map(str, args),
-                                 map(lambda e: str(e[0]) + "=" + str(e[1]), kwargs.items()))
-                       ))
+            logger.log(
+                level,
+                func.__name__
+                + ": "
+                + ", ".join(
+                    chain(
+                        map(str, args),
+                        map(lambda e: str(e[0]) + "=" + str(e[1]), kwargs.items()),
+                    )
+                ),
+            )
             if not when_done:
                 r = func(*args, **kwargs)
             return r
+
         return wrapped
+
     return decorator
 
 
 async def download_file(url, name):
     import aiofiles
     import aiohttp
+
     path = os.path.join(TEMP_DIR, name)
     async with aiohttp.request("GET", url) as response:
         async with aiofiles.open(path, mode="w+b") as f:
@@ -75,6 +85,7 @@ async def remove_file(path):
 
 def init_db(drop=False):
     import sqlite3 as sqlite
+
     if not os.path.exists(os.path.dirname(DB_PATH)):
         os.mkdir(os.path.dirname(DB_PATH))
     with sqlite.connect(DB_PATH) as connection:
@@ -82,7 +93,8 @@ def init_db(drop=False):
         if drop:
             connection.execute("DROP TABLE IF EXISTS Users")
         connection.execute(
-            "CREATE TABLE IF NOT EXISTS Users(id INTEGER PRIMARY KEY, email TEXT)")
+            "CREATE TABLE IF NOT EXISTS Users(id INTEGER PRIMARY KEY, email TEXT)"
+        )
 
 
 LF = "\n"

@@ -21,7 +21,14 @@ from aiogram.dispatcher.handler import SkipHandler
 
 from . import db, kindle
 from .config import BOT_TOKEN, ALLOWED_KINDLE_DOMAINS
-from .utils import get_sender_email, download_file, simple_sha1, logit, is_valid_email_address, LF
+from .utils import (
+    get_sender_email,
+    download_file,
+    simple_sha1,
+    logit,
+    is_valid_email_address,
+    LF,
+)
 from .broker import convert_ebook
 
 logger = logging.getLogger("p2kbot")
@@ -65,13 +72,15 @@ Currently, the following Send-to-Kindle emails are supported:
     )
 
 
-@dispatcher.message_handler(content_types=(ContentType.DOCUMENT, ))
+@dispatcher.message_handler(content_types=(ContentType.DOCUMENT,))
 @logit(logger)
 async def handle_file(message: types.Message):
-    if (recipient_email := await db.get_user_email(message.from_user.id)) is None:  # noqa
-        await message.reply("Kindle email address is not set.",
-                            parse_mode=ParseMode.MARKDOWN,
-                            disable_web_page_preview=True,)
+    if (recipient_email := await db.get_user_email(message.from_user.id)) is None:
+        await message.reply(
+            "Kindle email address is not set.",
+            parse_mode=ParseMode.MARKDOWN,
+            disable_web_page_preview=True,
+        )
     else:
         sender_email = get_sender_email(message.from_user.id)
         try:
@@ -81,34 +90,52 @@ async def handle_file(message: types.Message):
             file_url = f"https://api.telegram.org/file/bot{BOT_TOKEN}/{file.file_path}"
             file_name = message.document.file_name
             file_stem, file_ext = os.path.splitext(file_name)
-            file_path, reply = await asyncio.gather(download_file(file_url, simple_sha1(file.file_unique_id) + file_ext),
-                                                    message.reply("📥 Downloading the document...",
-                                                                  parse_mode=ParseMode.MARKDOWN,
-                                                                  disable_web_page_preview=True,))
+            file_path, reply = await asyncio.gather(
+                download_file(file_url, simple_sha1(file.file_unique_id) + file_ext),
+                message.reply(
+                    "📥 Downloading the document...",
+                    parse_mode=ParseMode.MARKDOWN,
+                    disable_web_page_preview=True,
+                ),
+            )
             if file_ext.lower() not in kindle.DOCUMENT_FORMATS:
-                file_path, reply = await asyncio.gather(convert_ebook(file_path),
-                                                        reply.edit_text("🔄 Converting the document...",
-                                                                        parse_mode=ParseMode.MARKDOWN,
-                                                                        disable_web_page_preview=True,))
-            reply, _ = await asyncio.gather(reply.edit_text("✉️ Pushing the document to Kindle...",
-                                                            parse_mode=ParseMode.MARKDOWN,
-                                                            disable_web_page_preview=True,),
-                                            kindle.push_file(sender_email,
-                                                             recipient_email,
-                                                             file_path,
-                                                             file_stem + os.path.splitext(file_path)[1]))
-            await reply.edit_text("✅ Push done.\nIt may take a few minutes to reach Kindle.",
-                                  parse_mode=ParseMode.MARKDOWN,
-                                  disable_web_page_preview=True,)
+                file_path, reply = await asyncio.gather(
+                    convert_ebook(file_path),
+                    reply.edit_text(
+                        "🔄 Converting the document...",
+                        parse_mode=ParseMode.MARKDOWN,
+                        disable_web_page_preview=True,
+                    ),
+                )
+            reply, _ = await asyncio.gather(
+                reply.edit_text(
+                    "✉️ Pushing the document to Kindle...",
+                    parse_mode=ParseMode.MARKDOWN,
+                    disable_web_page_preview=True,
+                ),
+                kindle.push_file(
+                    sender_email,
+                    recipient_email,
+                    file_path,
+                    file_stem + os.path.splitext(file_path)[1],
+                ),
+            )
+            await reply.edit_text(
+                "✅ Push done.\nIt may take a few minutes to reach Kindle.",
+                parse_mode=ParseMode.MARKDOWN,
+                disable_web_page_preview=True,
+            )
         except Exception as e:
             try:
                 await reply.delete()
             except Exception:
                 pass
             # FIX: e may leak secrets such as BOT_TOKEN?
-            await message.reply(f"❌ Error:\n```\n{e.__class__.__name__}: {str(e)}\n```",
-                                parse_mode=ParseMode.MARKDOWN,
-                                disable_web_page_preview=True,)
+            await message.reply(
+                f"❌ Error:\n```\n{e.__class__.__name__}: {str(e)}\n```",
+                parse_mode=ParseMode.MARKDOWN,
+                disable_web_page_preview=True,
+            )
             raise e
 
 
@@ -119,22 +146,30 @@ async def handle_message(message: types.Message):
         email = message.text.strip()
         if is_valid_email_address(email):
             if not any(email.endswith(domain) for domain in ALLOWED_KINDLE_DOMAINS):
-                await message.reply("Unsupported email domain. Try /help .",
-                                    parse_mode=ParseMode.MARKDOWN,
-                                    disable_web_page_preview=True,)
+                await message.reply(
+                    "Unsupported email domain. Try /help .",
+                    parse_mode=ParseMode.MARKDOWN,
+                    disable_web_page_preview=True,
+                )
             else:
                 await db.set_user_email(message.from_user.id, email)
-                await message.reply("Send-to-Kindle email address updated.",
-                                    parse_mode=ParseMode.MARKDOWN,
-                                    disable_web_page_preview=True,)
+                await message.reply(
+                    "Send-to-Kindle email address updated.",
+                    parse_mode=ParseMode.MARKDOWN,
+                    disable_web_page_preview=True,
+                )
         else:
-            await message.reply("Invalid email address.",
-                                parse_mode=ParseMode.MARKDOWN,
-                                disable_web_page_preview=True,)
+            await message.reply(
+                "Invalid email address.",
+                parse_mode=ParseMode.MARKDOWN,
+                disable_web_page_preview=True,
+            )
     else:
-        await message.reply("Unexpected message, try /help .",
-                            parse_mode=ParseMode.MARKDOWN,
-                            disable_web_page_preview=True,)
+        await message.reply(
+            "Unexpected message, try /help .",
+            parse_mode=ParseMode.MARKDOWN,
+            disable_web_page_preview=True,
+        )
 
 
 def run():
