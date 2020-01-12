@@ -10,10 +10,8 @@ python = "^3.8"
 aiohttp = "^3.6"
 aiogram = "^2.5"
 aiosqlite = "^0.11.0"
-autopep8 = "^1.4.4"
 aiofiles = "^0.4.0"
 aiosmtplib = "^1.1.2"
-aiodnsresolver = "^0.0.149"
 
 [tool.poetry.dev-dependencies]
 pylint = "^2.4.4"
