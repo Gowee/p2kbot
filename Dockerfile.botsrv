@@ -15,6 +15,6 @@ RUN set -eux; \
 COPY . .
 RUN touch /app/p2kbot.db
 VOLUME ['/app/p2kbot.db']
-RUN python -m p2kbot initdb
+RUN env BOT_TOKEN=Dummy python -m p2kbot initdb
 
 ENTRYPOINT ["python", "-m", "p2kbot", "botsrv"]
