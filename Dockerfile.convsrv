@@ -1,4 +1,4 @@
-FROM python:3.8-slim-buster
+FROM buildpack-deps:buster
 ENV CALIBRE_VERSION=4.8.0 \
     PIP_DEFAULT_TIMEOUT=100 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
