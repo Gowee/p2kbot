@@ -13,6 +13,8 @@ RUN set -eux; \
     poetry config virtualenvs.create false; \
     poetry install --no-dev
 COPY . .
+RUN touch /app/p2kbot.db
 VOLUME ['/app/p2kbot.db']
+RUN python -m p2kbot initdb
 
 ENTRYPOINT ["python", "-m", "p2kbot", "botsrv"]
