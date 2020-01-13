@@ -5,11 +5,12 @@ ENV CALIBRE_VERSION=4.8.0 \
     PIP_NO_CACHE_DIR=1 \
     POETRY_VERSION=1.0 \
     CALIBRE_PY3_PORT=1
-WORKDIR /calibre
+WORKDIR /tmp
 RUN set -eux; \
     apt-get update && apt-get install -y --no-install-recommends curl xz-utils; \
     curl -fsSL -O "https://github.com/kovidgoyal/calibre/releases/download/v$CALIBRE_VERSION/calibre-${CALIBRE_VERSION}.tar.xz"; \
     tar xf "calibre-${CALIBRE_VERSION}.tar.xz"; \
+    cd "calibre-${CALIBRE_VERSION}"; \
     # python2 setup.py bootstrap; \
     # python2 run-local calibre; \
     python3 setup.py build; \
