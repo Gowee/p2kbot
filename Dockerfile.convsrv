@@ -7,7 +7,7 @@ ENV CALIBRE_VERSION=4.8.0 \
     CALIBRE_PY3_PORT=1
 WORKDIR /calibre
 RUN set -eux; \
-    apt-get update && apt-get install curl xz-utils; \
+    apt-get update && apt-get install -y --no-install-recommends curl xz-utils; \
     curl -fsSL -O "https://github.com/kovidgoyal/calibre/releases/download/v$CALIBRE_VERSION/calibre-$CALIBRE_VERSION.tar.xz" | tar xf -; \
     # python2 setup.py bootstrap; \
     # python2 run-local calibre; \
