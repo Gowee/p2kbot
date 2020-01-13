@@ -8,9 +8,11 @@ RUN pip install "poetry==$POETRY_VERSION"
 
 WORKDIR /app
 COPY pyproject.toml poetry.lock ./
+# TODO: Why no cache hereafter?
 RUN set -eux; \
     poetry config virtualenvs.create false; \
     poetry install --no-dev
 COPY . .
+VOLUME ['/app/p2kbot.db']
 
 ENTRYPOINT ["python", "-m", "p2kbot", "botsrv"]

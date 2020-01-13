@@ -12,7 +12,7 @@ __all__ = (
 
 BOT_TOKEN = None
 TEMP_DIR = "./tmp/"
-DB_PATH = "./data/p2kbot.db"
+DB_PATH = "./p2kbot.db"
 EMAIL_DOMAIN = "p2kbot.example.com"
 CONVSRV_LISTEN_ADDRESS = "127.0.0.1:12000"
 BROKER_CONNECT_ADDRESS = Ellipsis
