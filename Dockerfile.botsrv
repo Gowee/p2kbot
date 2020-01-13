@@ -13,4 +13,4 @@ RUN set -eux; \
     poetry install --no-root
 COPY . .
 
-ENTRYPOINT ["python", "-m p2kbot botsrv"]
+ENTRYPOINT ["python", "-m p2kbot", "botsrv"]
