@@ -6,7 +6,7 @@ ENV CALIBRE_VERSION=4.9.1 \
     PIP_NO_CACHE_DIR=1 \
     POETRY_VERSION=1.0
 RUN set -eux; \
-    apt-get update && apt-get install curl; \
+    apt-get update && apt-get install -y --no-install-recommends curl; \
     curl -fsSLo calibre.tar.gz "https://github.com/kovidgoyal/calibre/archive/v${CALIBRE_VERSION}.tar.gz"; \
     tar xzf "calibre.tar.gz"; \
     cd "calibre-${CALIBRE_VERSION}"; \
